@@ -7,21 +7,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* --- STYLE CSS --- */
+        /* --- NOWE STYLE CSS (POPRAWIONE) --- */
         :root {
             --primary: #ff4757;
             --dark: #2f3542;
             --light: #f1f2f6;
             --accent: #1e90ff;
+            --inviting: #2ed573; /* Kolor zachęcający dla przycisku NIE */
         }
 
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
+            width: 100%;
             font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            overflow-x: hidden;
+            /* TO JEST KLUCZOWE - BLOKUJE PRZEWIJANIE */
+            overflow: hidden; 
         }
 
         .container {
@@ -40,29 +43,51 @@
         .hidden { display: none !important; }
         .fade-out { opacity: 0; pointer-events: none; }
 
-        h1, h2 { text-align: center; color: var(--dark); margin-bottom: 2rem; }
+        h1, h2 { text-align: center; color: var(--dark); margin-bottom: 2rem; z-index: 100; }
         p { font-size: 1.2rem; color: #57606f; margin-bottom: 2rem; text-align: center; }
 
-        /* SCENA 1: INTRO */
-        .btn-group { position: relative; width: 300px; height: 100px; display: flex; justify-content: center; gap: 20px; }
+        /* POPRAWIONA SEKCJA PRZYCISKÓW */
+        .btn-group { 
+            position: relative; 
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 30px; /* Odstęp między przyciskami na starcie */
+        }
         
         button {
-            padding: 15px 40px;
-            font-size: 1.2rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
             z-index: 10;
         }
 
-        .btn-yes { background-color: var(--primary); color: white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); }
-        .btn-yes:hover { transform: scale(1.1); }
+        /* Przycisk TAK - teraz mniejszy i mniej widoczny */
+        .btn-yes { 
+            background-color: #dfe4ea; /* Szary, niepozorny */
+            color: var(--dark); 
+            padding: 10px 25px; /* Mniejszy rozmiar */
+            font-size: 1rem;
+        }
+        .btn-yes:hover { 
+            background-color: #a4b0be; 
+            transform: scale(1.05); 
+        }
         
-        .btn-no { background-color: #dfe4ea; color: var(--dark); position: absolute; }
+        /* Przycisk NIE - teraz wielki i zachęcający (PUŁAPKA) */
+        .btn-no { 
+            background-color: var(--inviting); /* Zielony/Atrakcyjny */
+            color: white; 
+            padding: 20px 60px; /* Dużo większy */
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(46, 213, 115, 0.4);
+            /* Usunęliśmy position: absolute stąd, żeby na starcie stał obok */
+        }
 
-        /* SCENA 2: TRANSPORT (KRAKÓW) */
+        /* Pozostałe style (pociąg, karty, bilety) bez zmian */
         .train-container { width: 80%; max-width: 800px; position: relative; padding-top: 50px; }
         .track { width: 100%; height: 4px; background: #333; border-bottom: 4px dashed #777; position: relative; }
         .station { position: absolute; top: 20px; font-weight: bold; }
@@ -73,7 +98,6 @@
             transition: left 3s ease-in-out;
         }
 
-        /* SCENA 3 & 4: ZGADYWANKI */
         .cards-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
         .card {
             width: 220px; height: 300px;
@@ -84,14 +108,11 @@
             overflow: hidden;
             position: relative;
             transition: transform 0.3s, border 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
         }
         .card:hover { transform: translateY(-10px); }
         .card img { width: 100%; height: 200px; object-fit: cover; }
         .card h3 { margin-top: 20px; font-size: 1.5rem; }
-        
         .card.error { animation: shake 0.5s; border: 3px solid var(--primary); }
         .card.success { border: 3px solid #2ed573; }
 
@@ -105,42 +126,24 @@
 
         #feedback-text { height: 30px; font-weight: bold; margin-bottom: 10px; }
 
-        /* SCENA 5: BILETY */
         .tickets-container { display: flex; flex-direction: column; gap: 20px; align-items: center; padding-bottom: 50px; }
-        
         .ticket {
-            background: white;
-            width: 600px;
-            max-width: 90%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            display: flex;
-            overflow: hidden;
-            position: relative;
+            background: white; width: 600px; max-width: 90%;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex; overflow: hidden; position: relative;
         }
-        
         .ticket-left {
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 30%;
+            background: var(--primary); color: white; padding: 20px; display: flex;
+            flex-direction: column; justify-content: center; align-items: center; width: 30%;
             border-right: 2px dashed rgba(255,255,255,0.5);
         }
-
         .ticket-right { padding: 20px; width: 70%; position: relative; }
-        
         .route { font-size: 2rem; font-weight: bold; margin-bottom: 10px; color: var(--dark); }
         .flight-info { display: flex; justify-content: space-between; margin-top: 15px; color: #7f8c8d; }
         .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
         .value { font-size: 1.2rem; font-weight: bold; color: var(--dark); }
-
         .ticket-return { background: #f1f2f6; border: 2px dashed #bdc3c7; }
         .ticket-return .ticket-left { background: #bdc3c7; }
-        
     </style>
 </head>
 <body>
@@ -272,15 +275,31 @@
     <script>
         // --- LOGIKA JS ---
 
-        // 1. Uciekający przycisk NIE
+// 1. Uciekający przycisk NIE (POPRAWIONY)
         const noBtn = document.getElementById('btn-no');
         const yesBtn = document.getElementById('btn-yes');
 
         function moveButton() {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            // Najpierw ustawiamy pozycję absolutną, jeśli jeszcze jej nie ma
+            // Dzięki temu na starcie są ładnie obok siebie, a potem ten jeden "wyskakuje" z układu
+            if (noBtn.style.position !== 'absolute') {
+                noBtn.style.position = 'absolute';
+            }
+
+            // Pobieramy wymiary okna i przycisku
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            
+            // Obliczamy bezpieczny obszar (ekran minus rozmiar przycisku minus margines 50px)
+            const maxX = window.innerWidth - btnWidth - 50;
+            const maxY = window.innerHeight - btnHeight - 50;
+
+            // Losujemy pozycję, ale z zabezpieczeniem (Math.max(0, ...)) żeby nie wyszło ujemne
+            const randomX = Math.max(20, Math.random() * maxX);
+            const randomY = Math.max(20, Math.random() * maxY);
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
         }
 
         noBtn.addEventListener('mouseover', moveButton);
@@ -371,4 +390,5 @@
         }
     </script>
 </body>
+
 </html>
