@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niespodzianka Walentynkowa ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* --- STYLE CSS --- */
+        :root {
+            --primary: #ff4757;
+            --dark: #2f3542;
+            --light: #f1f2f6;
+            --accent: #1e90ff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .hidden { display: none !important; }
+        .fade-out { opacity: 0; pointer-events: none; }
+
+        h1, h2 { text-align: center; color: var(--dark); margin-bottom: 2rem; }
+        p { font-size: 1.2rem; color: #57606f; margin-bottom: 2rem; text-align: center; }
+
+        /* SCENA 1: INTRO */
+        .btn-group { position: relative; width: 300px; height: 100px; display: flex; justify-content: center; gap: 20px; }
+        
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+
+        .btn-yes { background-color: var(--primary); color: white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); }
+        .btn-yes:hover { transform: scale(1.1); }
+        
+        .btn-no { background-color: #dfe4ea; color: var(--dark); position: absolute; }
+
+        /* SCENA 2: TRANSPORT (KRAKÓW) */
+        .train-container { width: 80%; max-width: 800px; position: relative; padding-top: 50px; }
+        .track { width: 100%; height: 4px; background: #333; border-bottom: 4px dashed #777; position: relative; }
+        .station { position: absolute; top: 20px; font-weight: bold; }
+        .station-start { left: 0; }
+        .station-end { right: 0; }
+        .vehicle { 
+            font-size: 4rem; position: absolute; top: -55px; left: 0; 
+            transition: left 3s ease-in-out;
+        }
+
+        /* SCENA 3 & 4: ZGADYWANKI */
+        .cards-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .card {
+            width: 220px; height: 300px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s, border 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card:hover { transform: translateY(-10px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card h3 { margin-top: 20px; font-size: 1.5rem; }
+        
+        .card.error { animation: shake 0.5s; border: 3px solid var(--primary); }
+        .card.success { border: 3px solid #2ed573; }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        #feedback-text { height: 30px; font-weight: bold; margin-bottom: 10px; }
+
+        /* SCENA 5: BILETY */
+        .tickets-container { display: flex; flex-direction: column; gap: 20px; align-items: center; padding-bottom: 50px; }
+        
+        .ticket {
+            background: white;
+            width: 600px;
+            max-width: 90%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .ticket-left {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 30%;
+            border-right: 2px dashed rgba(255,255,255,0.5);
+        }
+
+        .ticket-right { padding: 20px; width: 70%; position: relative; }
+        
+        .route { font-size: 2rem; font-weight: bold; margin-bottom: 10px; color: var(--dark); }
+        .flight-info { display: flex; justify-content: space-between; margin-top: 15px; color: #7f8c8d; }
+        .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .value { font-size: 1.2rem; font-weight: bold; color: var(--dark); }
+
+        .ticket-return { background: #f1f2f6; border: 2px dashed #bdc3c7; }
+        .ticket-return .ticket-left { background: #bdc3c7; }
+        
+    </style>
+</head>
+<body>
+
+    <div id="scene-intro" class="container">
+        <h1>Zostaniesz moją Walentynką? ❤️<br><span style="font-size: 0.6em; color: #777;">(Wiem, że już po, ale czekaj...)</span></h1>
+        <div class="btn-group">
+            <button id="btn-yes" class="btn-yes">OCZYWIŚCIE!</button>
+            <button id="btn-no" class="btn-no">NIE</button>
+        </div>
+    </div>
+
+    <div id="scene-train" class="container hidden">
+        <h2>Pakuj walizki! Ruszamy z Krakowa...</h2>
+        <div class="train-container">
+            <div class="track">
+                <div class="vehicle">🚕</div> </div>
+            <div class="station station-start">Dom</div>
+            <div class="station station-end">Kraków Balice (KRK)</div>
+        </div>
+    </div>
+
+    <div id="scene-guess1" class="container hidden">
+        <h2>Jesteśmy na Balicach. Gdzie lecimy najpierw?</h2>
+        <p id="feedback-1">Wybierz mądrze...</p>
+        <div class="cards-grid">
+            <div class="card" onclick="wrongAnswer(this, 'Zimno! Tam wieje nudą.')">
+                <img src="https://images.unsplash.com/photo-1520939817895-060bdaf4de1e?auto=format&fit=crop&w=400" alt="Paryż">
+                <h3>Paryż?</h3>
+            </div>
+            <div class="card" onclick="correctAnswer1()">
+                <img src="assets/budapeszt.jpg" alt="Budapeszt" onerror="this.src='https://images.unsplash.com/photo-1565426873118-a1dfa295323e?auto=format&fit=crop&w=400'">
+                <h3>???</h3>
+            </div>
+            <div class="card" onclick="wrongAnswer(this, 'Eee, za blisko.')">
+                <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=400" alt="Londyn">
+                <h3>Londyn?</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="scene-guess2" class="container hidden">
+        <h2>Budapeszt to tylko przesiadka (i nocleg!).<br>Gdzie lecimy dalej?</h2>
+        <p id="feedback-2">Kierunek: Słońce!</p>
+        <div class="cards-grid">
+            <div class="card" onclick="wrongAnswer(this, 'Jeszcze nie wracamy!')">
+                <img src="https://images.unsplash.com/photo-1519197924294-4ba991a11128?auto=format&fit=crop&w=400" alt="Dom">
+                <h3>Warszawa?</h3>
+            </div>
+            <div class="card" onclick="wrongAnswer(this, 'Pizzę zjemy kiedy indziej.')">
+                <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=400" alt="Rzym">
+                <h3>Rzym?</h3>
+            </div>
+            <div class="card" onclick="correctAnswer2()">
+                <img src="assets/ateny.jpg" alt="Ateny" onerror="this.src='https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&w=400'">
+                <h3>???</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="scene-tickets" class="container hidden" style="height: auto; min-height: 100vh; padding-top: 50px;">
+        <h1>Wszystko załatwione! ❤️</h1>
+        <p>Pakuj stroje kąpielowe, lecimy we Wrześniu!</p>
+        
+        <div class="tickets-container">
+            <div class="ticket">
+                <div class="ticket-left">
+                    <span style="font-size: 2rem;">23</span>
+                    <span>WRZ</span>
+                </div>
+                <div class="ticket-right">
+                    <div class="route">KRK ✈️ BUD</div>
+                    <div class="flight-info">
+                        <div>
+                            <div class="label">Wylot</div>
+                            <div class="value">08:50</div>
+                        </div>
+                        <div>
+                            <div class="label">Lot</div>
+                            <div class="value">W62420</div> 
+                        </div>
+                        <div>
+                            <div class="label">Miejsca</div>
+                            <div class="value">Razem</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket">
+                <div class="ticket-left" style="background-color: #1e90ff;">
+                    <span style="font-size: 2rem;">25</span>
+                    <span>WRZ</span>
+                </div>
+                <div class="ticket-right">
+                    <div class="route">BUD ✈️ ATH</div>
+                    <div class="flight-info">
+                        <div>
+                            <div class="label">Wylot</div>
+                            <div class="value">06:05</div>
+                        </div>
+                        <div>
+                            <div class="label">Lot</div>
+                            <div class="value">FR1243</div>
+                        </div>
+                        <div>
+                            <div class="label">Cel</div>
+                            <div class="value">Słońce</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket ticket-return">
+                <div class="ticket-left">
+                    <span style="font-size: 1.5rem;">?</span>
+                </div>
+                <div class="ticket-right">
+                    <div class="route">ATH ✈️ POLSKA</div>
+                    <div style="margin-top: 15px; color: #7f8c8d;">
+                        <i>Data powrotu jest otwarta...</i><br>
+                        <b>Zadecydujemy na miejscu, ile chcemy zostać!</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIKA JS ---
+
+        // 1. Uciekający przycisk NIE
+        const noBtn = document.getElementById('btn-no');
+        const yesBtn = document.getElementById('btn-yes');
+
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
+
+        // Kliknięcie TAK
+        yesBtn.addEventListener('click', () => {
+            switchScene('scene-intro', 'scene-train');
+            // Animacja Taxi/Pociągu
+            setTimeout(() => {
+                const vehicle = document.querySelector('.vehicle');
+                vehicle.style.left = '90%'; // Jedzie do końca
+            }, 100);
+            
+            // Przejście dalej po animacji (3 sekundy)
+            setTimeout(() => {
+                switchScene('scene-train', 'scene-guess1');
+            }, 3500);
+        });
+
+        // Obsługa Zgadywanki 1 (Budapeszt)
+        function correctAnswer1() {
+            document.getElementById('feedback-1').innerText = "TAK! Ale to dopiero początek...";
+            document.getElementById('feedback-1').style.color = "green";
+            
+            setTimeout(() => {
+                switchScene('scene-guess1', 'scene-guess2');
+            }, 1500);
+        }
+
+        // Obsługa Zgadywanki 2 (Ateny)
+        function correctAnswer2() {
+            document.getElementById('feedback-2').innerText = "BINGO! Grecja czeka!";
+            document.getElementById('feedback-2').style.color = "green";
+            
+            setTimeout(() => {
+                switchScene('scene-guess2', 'scene-tickets');
+                runConfetti();
+            }, 1500);
+        }
+
+        function wrongAnswer(element, msg) {
+            // Szukamy elementu <p> z feedbackiem w aktualnej scenie
+            const parent = element.parentElement.parentElement;
+            const feedback = parent.querySelector('p');
+            feedback.innerText = msg;
+            feedback.style.color = "red";
+            
+            element.classList.add('error');
+            setTimeout(() => element.classList.remove('error'), 500);
+        }
+
+        // Pomocnicza funkcja zmiany scen
+        function switchScene(fromId, toId) {
+            document.getElementById(fromId).classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById(fromId).classList.add('hidden');
+                const next = document.getElementById(toId);
+                next.classList.remove('hidden');
+                // Mały hack żeby animacja fade-in zadziałała
+                setTimeout(() => next.classList.remove('fade-out'), 50);
+            }, 500);
+        }
+
+        // Konfetti na koniec
+        function runConfetti() {
+            var duration = 3000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+    </script>
+</body>
+</html>
