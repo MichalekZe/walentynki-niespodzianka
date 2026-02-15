@@ -2,211 +2,346 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niespodzianka Walentynkowa ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mam pytanie... ❤️</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        /* --- NOWE STYLE CSS (POPRAWIONE) --- */
+
+    <meta property="og:title" content="Mam małe pytanie... 🤫">
+    <meta property="og:description" content="Kliknij, żeby odebrać przesyłkę!">
+    <meta property="og:image" content="assets/preview.jpg"> <meta property="og:url" content="https://michalekze.github.io/walentynki-niespodzianka/">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#ff4757">
+<style>
+        /* --- NOWE STYLE CSS (WERSJA STABILNA) --- */
         :root {
             --primary: #ff4757;
             --dark: #2f3542;
             --light: #f1f2f6;
             --accent: #1e90ff;
-            --inviting: #2ed573; /* Kolor zachęcający dla przycisku NIE */
+            --inviting: #2ed573;
+            --pink-bg-1: #fff0f3;
+            --pink-bg-2: #ffe3e3;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
+            margin: 0; padding: 0; height: 100%; width: 100%;
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            /* TO JEST KLUCZOWE - BLOKUJE PRZEWIJANIE */
-            overflow: hidden; 
+            background: linear-gradient(135deg, var(--pink-bg-1) 0%, var(--pink-bg-2) 100%);
+            
+            /* ZMIANA: Odblokowujemy przewijanie pionowe, blokujemy tylko poziome */
+            overflow-y: auto; 
+            overflow-x: hidden; 
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: opacity 0.5s ease-in-out;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100vh; width: 100%;
+            position: absolute; top: 0; left: 0;
+            /* Usunąłem transition opacity, bo to powodowało lagi i duchy */
         }
 
         .hidden { display: none !important; }
-        .fade-out { opacity: 0; pointer-events: none; }
 
-        h1, h2 { text-align: center; color: var(--dark); margin-bottom: 2rem; z-index: 100; }
-        p { font-size: 1.2rem; color: #57606f; margin-bottom: 2rem; text-align: center; }
+        /* --- NAGŁÓWKI --- */
+        h1 { 
+            text-align: center; color: var(--primary); margin-bottom: 1rem; z-index: 100;
+            font-size: 3rem; text-shadow: 3px 3px 6px rgba(255, 71, 87, 0.3);
+        }
+        
+        #scene-intro h1 {
+            font-size: 5rem; line-height: 1.2; margin-bottom: 60px;
+        }
 
-        /* POPRAWIONA SEKCJA PRZYCISKÓW */
+        h2 { text-align: center; color: var(--dark); margin-bottom: 2rem; z-index: 100; font-size: 2.5rem; }
+        p { font-size: 1.5rem; color: #57606f; margin-bottom: 2rem; text-align: center; }
+
+        /* --- PREZENT --- */
+        .present-box {
+            font-size: 8rem; cursor: pointer; z-index: 200;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        .present-box:hover { transform: scale(1.1) rotate(5deg); }
+        .present-opening { animation: openBox 0.6s forwards ease-in-out; }
+
+        @keyframes openBox {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- PRZYCISKI --- */
         .btn-group { 
-            position: relative; 
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 30px; /* Odstęp między przyciskami na starcie */
+            position: relative; width: 100%; display: flex; 
+            justify-content: center; align-items: center; gap: 40px; margin-top: 40px; z-index: 200;
         }
-        
         button {
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
-            z-index: 10;
+            border: none; border-radius: 60px; cursor: pointer;
+            font-weight: 800; font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase; letter-spacing: 2px;
         }
-
-        /* Przycisk TAK - teraz mniejszy i mniej widoczny */
         .btn-yes { 
-            background-color: #dfe4ea; /* Szary, niepozorny */
-            color: var(--dark); 
-            padding: 10px 25px; /* Mniejszy rozmiar */
-            font-size: 1rem;
+            background-color: #ffffff; color: var(--primary); border: 2px solid #fff0f3;
+            padding: 20px 50px; font-size: 1.5rem; z-index: 200;
+            transition: transform 0.2s;
         }
-        .btn-yes:hover { 
-            background-color: #a4b0be; 
-            transform: scale(1.05); 
-        }
-        
-        /* Przycisk NIE - teraz wielki i zachęcający (PUŁAPKA) */
+        .btn-yes:hover { transform: scale(1.05); }
+
         .btn-no { 
-            background-color: var(--inviting); /* Zielony/Atrakcyjny */
-            color: white; 
-            padding: 20px 60px; /* Dużo większy */
-            font-size: 1.5rem;
-            box-shadow: 0 5px 20px rgba(46, 213, 115, 0.4);
-            /* Usunęliśmy position: absolute stąd, żeby na starcie stał obok */
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; 
+            padding: 40px 120px; font-size: 4rem; border-radius: 100px;
+            z-index: 9999 !important; box-shadow: 0 20px 60px rgba(255, 65, 108, 0.6); 
+            position: relative; animation: heartbeat 1.5s infinite; white-space: nowrap;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.05); } 30% { transform: scale(1); }
+            45% { transform: scale(1.05); } 100% { transform: scale(1); }
         }
 
-        /* Pozostałe style (pociąg, karty, bilety) bez zmian */
-        .train-container { width: 80%; max-width: 800px; position: relative; padding-top: 50px; }
-        .track { width: 100%; height: 4px; background: #333; border-bottom: 4px dashed #777; position: relative; }
-        .station { position: absolute; top: 20px; font-weight: bold; }
-        .station-start { left: 0; }
-        .station-end { right: 0; }
+        /* --- SCENA 2: TRANSPORT (POCIĄG 🚂) --- */
+        .train-container { 
+            width: 80%; max-width: 800px; position: relative; 
+            height: 150px; display: flex; align-items: center;
+        }
+
+        .station-label {
+            position: absolute; 
+            top: -70px; /* BYŁO -20px. Teraz są dużo wyżej. */
+            font-weight: 800; 
+            color: var(--dark);
+            text-align: center; 
+            font-size: 1.5rem; 
+            z-index: 10;
+            line-height: 1.2; /* Lekko zmniejszona interlinia dla ikonki i tekstu */
+        }
+        .label-left { left: 0; }
+        .label-right { right: 0; }
+
+        /* TORY KOLEJOWE */
+        .track { 
+            width: 100%; height: 16px; 
+            border-top: 4px solid #57606f; border-bottom: 4px solid #57606f;
+            position: relative; z-index: 1;
+        }
+        .track::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(90deg, transparent, transparent 10px, #57606f 10px, #57606f 14px);
+        }
+
+        /* POCIĄG */
         .vehicle { 
-            font-size: 4rem; position: absolute; top: -55px; left: 0; 
-            transition: left 3s ease-in-out;
+            font-size: 6rem; 
+            position: absolute; 
+            /* Ustawienie na torach (może wymagać lekkiej korekty u Ciebie +/- 2px) */
+            top: 38px; 
+            left: 0; 
+            z-index: 50;
+            
+            /* Domyślnie stoi i tylko patrzy w prawo */
+            transform: translateY(-50%) scaleX(-1);
+            
+            /* Domyślnie brak ruchu */
+            transition: left 5s linear; 
         }
 
+        /* Klasa, którą dodamy jak ruszy - uruchamia podskakiwanie */
+        .vehicle.moving {
+            animation: rumble 0.5s infinite linear;
+        }
+
+        /* Definicja podskakiwania (góra-dół + lekkie przechylenie) */
+        @keyframes rumble {
+            0%   { transform: translateY(-50%) scaleX(-1) rotate(0deg); }
+            25%  { transform: translateY(-52%) scaleX(-1) rotate(-2deg); }
+            50%  { transform: translateY(-50%) scaleX(-1) rotate(0deg); }
+            75%  { transform: translateY(-48%) scaleX(-1) rotate(2deg); }
+            100% { transform: translateY(-50%) scaleX(-1) rotate(0deg); }
+        }
+
+        /* --- KARTY I BILETY --- */
         .cards-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
         .card {
-            width: 220px; height: 300px;
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.3s, border 0.3s;
-            display: flex; flex-direction: column; align-items: center;
+            width: 220px; height: 300px; border-radius: 15px; background: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor: pointer; overflow: hidden;
+            position: relative; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center;
         }
         .card:hover { transform: translateY(-10px); }
         .card img { width: 100%; height: 200px; object-fit: cover; }
         .card h3 { margin-top: 20px; font-size: 1.5rem; }
-        .card.error { animation: shake 0.5s; border: 3px solid var(--primary); }
-        .card.success { border: 3px solid #2ed573; }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-            100% { transform: translateX(0); }
-        }
-
-        #feedback-text { height: 30px; font-weight: bold; margin-bottom: 10px; }
-
+        .card.error { border: 3px solid var(--primary); }
+        
         .tickets-container { display: flex; flex-direction: column; gap: 20px; align-items: center; padding-bottom: 50px; }
         .ticket {
-            background: white; width: 600px; max-width: 90%;
-            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            display: flex; overflow: hidden; position: relative;
+            background: white; width: 600px; max-width: 90%; border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; overflow: hidden;
         }
         .ticket-left {
-            background: var(--primary); color: white; padding: 20px; display: flex;
-            flex-direction: column; justify-content: center; align-items: center; width: 30%;
+            background: var(--primary); color: white; padding: 20px; width: 30%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             border-right: 2px dashed rgba(255,255,255,0.5);
         }
-        .ticket-right { padding: 20px; width: 70%; position: relative; }
+        .ticket-right { padding: 20px; width: 70%; }
         .route { font-size: 2rem; font-weight: bold; margin-bottom: 10px; color: var(--dark); }
         .flight-info { display: flex; justify-content: space-between; margin-top: 15px; color: #7f8c8d; }
-        .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
-        .value { font-size: 1.2rem; font-weight: bold; color: var(--dark); }
         .ticket-return { background: #f1f2f6; border: 2px dashed #bdc3c7; }
         .ticket-return .ticket-left { background: #bdc3c7; }
+
+        /* --- SEKCYJA ROZLICZENIA DŁUGU 🧾 --- */
+        .debt-note {
+            background: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            padding: 30px;
+            width: 500px;
+            max-width: 90%;
+            margin-top: 40px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace; /* Czcionka jak z rachunku */
+        }
+
+        .debt-note h3 {
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .debt-details p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            text-align: left;
+            color: #555;
+        }
+
+        /* PIECZĄTKA */
+        .stamp-container {
+            position: absolute;
+            top: 40%;
+            right: 10%;
+            transform: rotate(-15deg);
+        }
+
+        .stamp {
+            border: 5px solid #2ed573; /* Zielony kolor "ZATWIERDZONO" */
+            color: #2ed573;
+            font-size: 2.5rem;
+            font-weight: 900;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            border-radius: 10px;
+            opacity: 0; /* Na start ukryta */
+            mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png'); /* Efekt starcia (opcjonalny) */
+            mix-blend-mode: multiply;
+        }
+
+        /* Animacja uderzenia pieczątki */
+        .stamp-visible {
+            animation: stamp-slam 0.5s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards;
+        }
+
+        @keyframes stamp-slam {
+            0% { transform: scale(3); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* ZMIANA: Pozwalamy scenie z biletami rosnąć w dół */
+        #scene-tickets {
+            height: auto !important; /* Kasujemy sztywne 100vh */
+            min-height: 100vh;       /* Ale minimalnie ma być na cały ekran */
+            justify-content: flex-start; /* Zaczynamy od góry */
+            padding-top: 50px;
+            padding-bottom: 100px; /* Margines na dole, żeby rachunek miał luz */
+        }
     </style>
 </head>
 <body>
 
-    <div id="scene-intro" class="container">
-        <h1>Zostaniesz moją Walentynką? ❤️<br><span style="font-size: 0.6em; color: #777;">(Wiem, że już po, ale czekaj...)</span></h1>
+<div id="scene-present" class="container">
+        <h1>Mam coś dla Ciebie... 🤫</h1>
+        <div id="gift-box" class="present-box">🎁</div>
+        <p style="margin-top: 20px;">Kliknij, żeby rozpakować!</p>
+    </div>
+
+    <div id="scene-intro" class="container hidden">
+        <h1>Zostaniesz moją Walentynką? ❤️<br><span style="font-size: 0.5em; color: #777; font-weight: normal;">Troszkę późno, ale będziesz zadowolona jak się oczywiście zgodzisz 🥺🥺</span></h1>
         <div class="btn-group">
-            <button id="btn-yes" class="btn-yes">OCZYWIŚCIE!</button>
+            <button id="btn-yes" class="btn-yes">TAK</button>
             <button id="btn-no" class="btn-no">NIE</button>
         </div>
     </div>
 
-    <div id="scene-train" class="container hidden">
-        <h2>Pakuj walizki! Ruszamy z Krakowa...</h2>
+<div id="scene-train" class="container hidden">
+        <h2 style="margin-bottom: 80px;">Ruszamy na lotnisko... 🚅💨</h2>
+        
         <div class="train-container">
-            <div class="track">
-                <div class="vehicle">🚕</div> </div>
-            <div class="station station-start">Dom</div>
-            <div class="station station-end">Kraków Balice (KRK)</div>
+            <div class="station-label label-left">🏠<br>Bydgoszcz</div>
+            <div class="station-label label-right">✈️<br>Kraków - Balice</div>
+
+            <div class="vehicle">🚂</div>
+
+            <div class="track"></div>
         </div>
     </div>
 
-    <div id="scene-guess1" class="container hidden">
-        <h2>Jesteśmy na Balicach. Gdzie lecimy najpierw?</h2>
-        <p id="feedback-1">Wybierz mądrze...</p>
+<div id="scene-guess1" class="container hidden">
+        <h2>Jesteśmy na lotnisku. Gdzie lecimy na wakacje?</h2>
+        <p id="feedback-1">Wybierz kochanie coś fajnego dla nas</p>
+        
         <div class="cards-grid">
-            <div class="card" onclick="wrongAnswer(this, 'Zimno! Tam wieje nudą.')">
-                <img src="https://images.unsplash.com/photo-1520939817895-060bdaf4de1e?auto=format&fit=crop&w=400" alt="Paryż">
-                <h3>Paryż?</h3>
+            <div class="card" onclick="wrongAnswer(this, 'Tam już byłaś')">
+                <img src="https://images.unsplash.com/photo-1519677100203-a0e668c92439?auto=format&fit=crop&w=400" alt="Praga">
+                <h3>Praga?</h3>
             </div>
+
+            <div class="card" onclick="wrongAnswer(this, 'Nie lubimy brytoli')">
+                <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=400" alt="Londyn">
+                <h3>Londyn?</h3>
+            </div>
+
             <div class="card" onclick="correctAnswer1()">
                 <img src="assets/budapeszt.jpg" alt="Budapeszt" onerror="this.src='https://images.unsplash.com/photo-1565426873118-a1dfa295323e?auto=format&fit=crop&w=400'">
-                <h3>???</h3>
-            </div>
-            <div class="card" onclick="wrongAnswer(this, 'Eee, za blisko.')">
-                <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=400" alt="Londyn">
-                <h3>Londyn?</h3>
+                <h3>Budapeszt?</h3>
             </div>
         </div>
     </div>
 
     <div id="scene-guess2" class="container hidden">
-        <h2>Budapeszt to tylko przesiadka (i nocleg!).<br>Gdzie lecimy dalej?</h2>
-        <p id="feedback-2">Kierunek: Słońce!</p>
+        <h2>Ale Budapeszt to tylko szybkie zwiedzanie i nocleg<br>Gdzie lecimy dalej?</h2>
+        <p id="feedback-2">O cyzm rozmawialiśmy niedawno?</p>
+        
         <div class="cards-grid">
-            <div class="card" onclick="wrongAnswer(this, 'Jeszcze nie wracamy!')">
-                <img src="https://images.unsplash.com/photo-1519197924294-4ba991a11128?auto=format&fit=crop&w=400" alt="Dom">
-                <h3>Warszawa?</h3>
+            <div class="card" onclick="wrongAnswer(this, 'Jeszcze polecimy kiedyś')">
+                <img src="https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=400" alt="Barcelona">
+                <h3>Barcelona?</h3>
             </div>
-            <div class="card" onclick="wrongAnswer(this, 'Pizzę zjemy kiedy indziej.')">
+
+            <div class="card" onclick="correctAnswer2()">
+                <img src="assets/ateny.jpg" alt="Ateny" onerror="this.src='https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=400'">
+                <h3>Ateny?</h3>
+            </div>
+
+            <div class="card" onclick="wrongAnswer(this, 'Kiedyś zwiedzimy, ale nie teraz')">
                 <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=400" alt="Rzym">
                 <h3>Rzym?</h3>
-            </div>
-            <div class="card" onclick="correctAnswer2()">
-                <img src="assets/ateny.jpg" alt="Ateny" onerror="this.src='https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&w=400'">
-                <h3>???</h3>
             </div>
         </div>
     </div>
 
     <div id="scene-tickets" class="container hidden" style="height: auto; min-height: 100vh; padding-top: 50px;">
         <h1>Wszystko załatwione! ❤️</h1>
-        <p>Pakuj stroje kąpielowe, lecimy we Wrześniu!</p>
+        <p>Lecimy we Wrześniu kochanie, Kocham Cię słonko ❤️❤️❤️</p>
         
         <div class="tickets-container">
             <div class="ticket">
@@ -224,10 +359,6 @@
                         <div>
                             <div class="label">Lot</div>
                             <div class="value">W62420</div> 
-                        </div>
-                        <div>
-                            <div class="label">Miejsca</div>
-                            <div class="value">Razem</div>
                         </div>
                     </div>
                 </div>
@@ -249,10 +380,6 @@
                             <div class="label">Lot</div>
                             <div class="value">FR1243</div>
                         </div>
-                        <div>
-                            <div class="label">Cel</div>
-                            <div class="value">Słońce</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -264,10 +391,28 @@
                 <div class="ticket-right">
                     <div class="route">ATH ✈️ POLSKA</div>
                     <div style="margin-top: 15px; color: #7f8c8d;">
-                        <i>Data powrotu jest otwarta...</i><br>
-                        <b>Zadecydujemy na miejscu, ile chcemy zostać!</b>
+                        <i>Data powrotu do ogarnięcia...</i><br>
                     </div>
                 </div>
+            </div>
+
+            <div class="debt-note">
+                <h3>🧾 Oficjalna Nota Księgowa</h3>
+                <div class="debt-details">
+                    <p><strong>Wierzyciel:</strong> Mój piękny gyacik </p>
+                    <p><strong>Dłużnik:</strong> Już nie ja</p>
+                    <p><strong>Tytuł:</strong> "Kasa za buty"</p>
+                    <p><strong>Metoda płatności:</strong> <span style="color: var(--primary);">Wakacje z twoim alvaro ✈️</span></p>
+                </div>
+                
+                <div class="stamp-container">
+                    <div class="stamp">DŁUG<br>SPŁACONY</div>
+                </div>
+
+                <p style="font-size: 0.8rem; margin-top: 15px; color: #aaa;">
+                    *Niniejszy dokument jest ostateczny i nie podlega reklamacji. <br>
+                    
+                </p>
             </div>
         </div>
     </div>
@@ -275,117 +420,127 @@
     <script>
         // --- LOGIKA JS ---
 
-        // 1. Uciekający przycisk NIE (POPRAWIONY)
+        // Pomocnicza funkcja zmiany scen (BEZ PŁYNNYCH PRZEJŚĆ ŻEBY NIE BYŁO BŁĘDÓW)
+        function switchScene(fromId, toId) {
+            const fromEl = document.getElementById(fromId);
+            const toEl = document.getElementById(toId);
+            
+            // Natychmiastowe ukrycie
+            fromEl.classList.add('hidden');
+            fromEl.style.display = 'none'; // Wymuszenie
+            
+            // Pokazanie nowej
+            toEl.classList.remove('hidden');
+            toEl.style.display = 'flex';   // Wymuszenie
+        }
+
+        // 0. Obsługa Prezentu
+        const giftBox = document.getElementById('gift-box');
+        giftBox.addEventListener('click', () => {
+            giftBox.style.animation = 'none'; 
+            void giftBox.offsetWidth; 
+            giftBox.classList.add('present-opening');
+
+            // Wybuch serduszek
+            confetti({
+                particleCount: 80, spread: 100, origin: { y: 0.5 },
+                colors: ['#ff4757', '#ff6b81', '#ffffff'], shapes: ['heart']
+            });
+
+            // SZYBSZE PRZEJŚCIE - tylko 600ms czekania
+            setTimeout(() => {
+                switchScene('scene-present', 'scene-intro');
+            }, 600);
+        });
+
+        // 1. Uciekający przycisk NIE
         const noBtn = document.getElementById('btn-no');
         const yesBtn = document.getElementById('btn-yes');
 
         function moveButton() {
-            // Najpierw ustawiamy pozycję absolutną, jeśli jeszcze jej nie ma
-            // Dzięki temu na starcie są ładnie obok siebie, a potem ten jeden "wyskakuje" z układu
-            if (noBtn.style.position !== 'absolute') {
-                noBtn.style.position = 'absolute';
-            }
-
-            // Pobieramy wymiary okna i przycisku
+            if (noBtn.style.position !== 'fixed') { noBtn.style.position = 'fixed'; }
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
-            
-            // Obliczamy bezpieczny obszar (ekran minus rozmiar przycisku minus margines 50px)
-            const maxX = window.innerWidth - btnWidth - 50;
-            const maxY = window.innerHeight - btnHeight - 50;
-
-            // Losujemy pozycję, ale z zabezpieczeniem (Math.max(0, ...)) żeby nie wyszło ujemne
-            const randomX = Math.max(20, Math.random() * maxX);
-            const randomY = Math.max(20, Math.random() * maxY);
-
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
+            const maxX = window.innerWidth - btnWidth - 20;
+            const maxY = window.innerHeight - btnHeight - 20;
+            const safeX = Math.max(10, Math.random() * maxX);
+            const safeY = Math.max(10, Math.random() * maxY);
+            noBtn.style.left = `${safeX}px`;
+            noBtn.style.top = `${safeY}px`;
         }
-
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // Kliknięcie TAK
+        // 2. Kliknięcie TAK - OBSŁUGA POCIĄGU
+        // 2. Kliknięcie TAK - OBSŁUGA POCIĄGU + PULSOWANIE
         yesBtn.addEventListener('click', () => {
             switchScene('scene-intro', 'scene-train');
-            // Animacja Taxi/Pociągu
-            setTimeout(() => {
-                const vehicle = document.querySelector('.vehicle');
-                vehicle.style.left = '90%'; // Jedzie do końca
-            }, 100);
             
-            // Przejście dalej po animacji (3 sekundy)
+            const vehicle = document.querySelector('.vehicle');
+            
+            // RESET POZYCJI I KLASY
+            vehicle.classList.remove('moving'); // Upewniamy się, że nie skacze na starcie
+            vehicle.style.transition = 'none';
+            vehicle.style.left = '0px';
+            
+            // START ANIMACJI PO CHWILI
+            setTimeout(() => {
+                vehicle.classList.add('moving'); // START PODSKAKIWANIA!
+                vehicle.style.transition = 'left 5s linear'; // JAZDA
+                vehicle.style.left = 'calc(100% - 100px)';   // META
+            }, 50);
+
+            // PRZEJŚCIE DALEJ
             setTimeout(() => {
                 switchScene('scene-train', 'scene-guess1');
-            }, 3500);
+            }, 5500);
         });
 
-        // Obsługa Zgadywanki 1 (Budapeszt)
+        // 3. Quiz 1 - Budapeszt
         function correctAnswer1() {
-            document.getElementById('feedback-1').innerText = "TAK! Ale to dopiero początek...";
+            document.getElementById('feedback-1').innerText = "TAK! Ale to nie wszystko...";
             document.getElementById('feedback-1').style.color = "green";
-            
-            setTimeout(() => {
-                switchScene('scene-guess1', 'scene-guess2');
-            }, 1500);
+            setTimeout(() => { switchScene('scene-guess1', 'scene-guess2'); }, 1000);
         }
 
-        // Obsługa Zgadywanki 2 (Ateny)
+        // 4. Quiz 2 - Ateny
         function correctAnswer2() {
-            document.getElementById('feedback-2').innerText = "BINGO! Grecja czeka!";
+            document.getElementById('feedback-2').innerText = "No to kierunek Grecja, sama wybrałaś";
             document.getElementById('feedback-2').style.color = "green";
             
-            setTimeout(() => {
-                switchScene('scene-guess2', 'scene-tickets');
+            setTimeout(() => { 
+                switchScene('scene-guess2', 'scene-tickets'); 
                 runConfetti();
-            }, 1500);
+
+                // Czekamy chwilę i walimy pieczątkę + przewijamy
+                setTimeout(() => {
+                    // 1. Pokaż pieczątkę
+                    const stamp = document.querySelector('.stamp');
+                    if(stamp) stamp.classList.add('stamp-visible'); // Zabezpieczenie if
+                    
+                    // 2. Przewiń ekran na sam dół płynnie
+                    window.scrollTo({
+                        top: document.body.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                    
+                }, 1500);
+
+            }, 1000);
         }
 
         function wrongAnswer(element, msg) {
-            // Szukamy elementu <p> z feedbackiem w aktualnej scenie
             const parent = element.parentElement.parentElement;
             const feedback = parent.querySelector('p');
-            feedback.innerText = msg;
-            feedback.style.color = "red";
-            
-            element.classList.add('error');
-            setTimeout(() => element.classList.remove('error'), 500);
+            feedback.innerText = msg; feedback.style.color = "red";
         }
 
-        // Pomocnicza funkcja zmiany scen
-        function switchScene(fromId, toId) {
-            document.getElementById(fromId).classList.add('fade-out');
-            setTimeout(() => {
-                document.getElementById(fromId).classList.add('hidden');
-                const next = document.getElementById(toId);
-                next.classList.remove('hidden');
-                // Mały hack żeby animacja fade-in zadziałała
-                setTimeout(() => next.classList.remove('fade-out'), 50);
-            }, 500);
-        }
-
-        // Konfetti na koniec
         function runConfetti() {
-            var duration = 3000;
-            var end = Date.now() + duration;
-
+            var end = Date.now() + 3000;
             (function frame() {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 }
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 }
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
     </script>
